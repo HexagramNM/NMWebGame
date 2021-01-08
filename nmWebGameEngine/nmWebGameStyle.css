@@ -1,0 +1,115 @@
+#smartPhoneButtonLeft {
+  float: left;
+  align-content: center;
+  z-index: 0;
+}
+#smartPhoneButtonRight {
+  float: right;
+  align-content: center;
+  z-index: 0;
+}
+.smartPhoneButtons {
+  width: 320px;
+  height: 720px;
+  display: table-cell;
+  vertical-align: middle;
+}
+.smartPhoneButtons input[type="button"]{
+  width:150px;
+  height:150px;
+  font-size:100px;
+}
+#gameDiv {
+  width: 960px;
+  height: 720px;
+  position: relative;
+  margin: auto;
+}
+#gameOptionDiv {
+  width: 960px;
+  background-color: #555555;
+  font-size:40px;
+  display: flex;
+}
+#volumeOptionDiv{
+  width: 840px;
+  align-content: center;
+}
+#tweetButtonDiv{
+	position: relative;
+	width: 120px;
+  align-content: left;
+	margin: 0 auto;
+	display: block;
+	overflow: hidden;
+	cursor: pointer;
+}
+#tweetButtonDiv img {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+	width: 100%;
+	display: block;
+	-webkit-transition: .1s ease-in-out;
+	transition: .1s ease-in-out;
+}
+#tweetButtonDiv:hover img:nth-of-type(2) {
+	opacity: 0;
+}
+#gameOptionDiv input[type="range"]{
+  width:500px;
+}
+#otherDiv {
+  position: relative;
+  margin: auto;
+  z-index: 2;
+}
+#screen{
+  position:absolute;
+  top:0px;
+  left:0px;
+  margin: auto;
+  z-index:2;
+}
+#tmpCanvasForLoad{
+  position:absolute;
+  top:0px;
+  left:0px;
+  margin: auto;
+  z-index:1;
+}
+
+a{
+	color: #00ffff;
+	font-style: normal;
+  cursor: pointer;
+	text-decoration: underline;
+}
+a:link{
+	color: #00ffff;
+	font-style: normal;
+	text-decoration: underline;
+}
+a:visited{
+	color: #ff5555;
+	font-style: normal;
+	text-decoration: underline;
+}
+a:hover{
+	color: #ffff00;
+	font-style: normal;
+	text-decoration: underline;
+}
+a:active{
+	color: #00ff00;
+	font-style: normal;
+	text-decoration: underline;
+}
+h2{
+	color:#ffffaa;
+}
+h3{
+	color:#aaffaa;
+}

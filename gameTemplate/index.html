@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta content="text/html" http-equiv="X-UA-Compatible" content="IE=9">
+  <meta name="viewport" content="">
+  <meta charset="UTF-8">
+
+  <!-- Twitterカードの設定 -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="アカウント名">
+  <meta name="og:title" content="テンプレート">
+  <meta name="og:description" content="売り文句">
+  <meta name="og:image" content="画像パス（絶対パス）">
+  <meta name="og:url" content="ページのURL">
+
+  <title>テンプレート</title>
+
+  <!-- ゲームエンジン部分 -->
+  <link rel="stylesheet" type="text/css" href="../nmWebGameEngine/nmWebGameStyle.css">
+  <script type="text/javascript" src="../nmWebGameEngine/saveDataManager.js"></script>
+  <script type="text/javascript" src="../nmWebGameEngine/imageManager.js"></script>
+  <script type="text/javascript" src="../nmWebGameEngine/soundManager.js"></script>
+  <script type="text/javascript" src="../nmWebGameEngine/controlManager.js"></script>
+  <script type="text/javascript" src="../nmWebGameEngine/nmWebGameEngine.js"></script>
+
+  <!-- 独自部分 -->
+  <script type="text/javascript" src="main.js"></script>
+
+</head>
+
+<body bgcolor="#000000" text="#ffffff" onload="nmGameInit(gameInit, gameLoading, gameMain, gameTweet)">
+  <center>
+
+    <div id="smartPhoneButtonLeft">
+      <div class="smartPhoneButtons">
+        <input type="hidden" id="upButton" value="↑" name="up"><br><br>
+        <input type="hidden" id="leftButton" value="←" name="left">
+        <input type="hidden" id="rightButton" value="→" name="right"><br><br>
+        <input type="hidden" id="downButton" value="↓" name="down">
+      </div>
+    </div>
+    <div id="smartPhoneButtonRight">
+      <div class="smartPhoneButtons">
+        <input type="hidden" id="qButton" value="Q" name="q"><br><br>
+        <input type="hidden" id="zButton" value="Z" name="z"><br><br>
+        <input type="hidden" id="xButton" value="X" name="x">
+      </div>
+    </div>
+    <div id="gameDiv">
+      <canvas id="tmpCanvasForLoad"></canvas>
+      <canvas id="screen"></canvas>
+    </div>
+
+    <div id="gameOptionDiv">
+      <div id="volumeOptionDiv">
+        音量：<input type="range" value="100" min="0" max="100" step="1" id="volumeSlider">
+        <output id="volumeOutput">100</output>
+      </div>
+      <div id="tweetButtonDiv">
+        <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" target="_blank" rel="noopener noreferrer" id="tweetShare">
+          <img width=100px src="../nmWebGameEngine/touchedTweetButton.png">
+          <img width=100px src="../nmWebGameEngine/tweetButton.png">
+        </a>
+      </div>
+    </div><br>
+
+    <div id="otherDiv">
+      <p>
+        ここに操作説明とかを書く
+      </p>
+      <p>
+      <a href="http://nmsgameproject.web.fc2.com/">N.M's game projectのページに戻る</a><br>
+      </p>
+    </div>
+
+  </center>
+</body>
+</html>
