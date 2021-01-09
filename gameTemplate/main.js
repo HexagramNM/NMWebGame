@@ -18,10 +18,11 @@ function gameLoading() {
 
 function gameMain() {
     titleRogoImage.drawImageWithRotateScaleOpacity(control.mouseX, control.mouseY, 0, 0, count * Math.PI / 180.0, 1, 1, 1);
-    if (!control.mouseClicked[0]) {
+    var mouseLeftDown = control.isMouseDown(0);
+    if (mouseLeftDown < 0) {
         count++;
     }
-    else if (control.mouseClickedStableCount[0] == 0) {
+    else if (mouseLeftDown == 0) {
         countData.saveData(count);
     }
     if (count >= 360) {

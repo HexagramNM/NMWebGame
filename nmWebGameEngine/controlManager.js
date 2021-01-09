@@ -191,6 +191,19 @@ ControlManager.prototype.keyBoardUp = function(e) {
     this.keyDowned[e.keyCode] = false;
 }
 
+//該当するマウスボタンが押されていれば、押され続けているカウント数を返し、そうでなければ-1を返す。
+ControlManager.prototype.isMouseDown = function(mouseIdx) {
+    if (mouseIdx < 0 || mouseIdx > 2) {
+        return -1;
+    }
+    else if (this.mouseClicked[mouseIdx]) {
+        return this.mouseClickedStableCount[mouseIdx];
+    }
+    else {
+        return -1;
+    }
+}
+
 ControlManager.prototype.hasFocus = function() {
     return this.isFocus;
 }
