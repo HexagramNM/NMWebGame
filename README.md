@@ -3,6 +3,9 @@
 [落ちものパズルゲーム「長屋合宿を取り戻せ！」](http://nmsgameproject.web.fc2.com/nagayaGassyukuPuzzle/nagayaGassyukuPuzzle.html)で使用しております。
 Google Chrome, Microsoft Edge, Mozilla Firefoxで動作することを確認しております。
 
+ゲームのテンプレートは`gameTemplate`に入っており、再生すると[こんな感じ](https://hexagramnm.github.io/NMWebGame/gameTemplate/index.html)になります。
+（gameTemplate/index.htmlがゲーム用のサイトになります。）
+
 このエンジンですでに実装している機能は以下の通りです。
 - 画像表示（分割読み込み、縮小拡大表示、回転表示、トリミング表示）
 - 音声再生（ループ再生、ゲーム画面下のスライダーで音量が調節されます。）
