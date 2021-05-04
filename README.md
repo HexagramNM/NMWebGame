@@ -68,7 +68,7 @@ Google Chrome, Microsoft Edge, Mozilla Firefoxで動作することを確認し�
 - `yScale`...縦方向の画像の拡大率です。1.0で等倍です。
 - `opacity`...不透明度。0.0で完全に透明になり、1.0で完全に不透明になります。
 
-指定した位置に画像を回転、拡大した状態で表示します。
+画像の縦横を拡大してから、画像を回転します。結果を指定した位置に表示します。
 
 ### `ImageManager.drawImageWithRotateSquashOpacity(x, y, divXId, divYId, rotateRad, squashRad, xScale, yScale,  opacity)`
 - `x`...表示場所のx座標。画像の中心がこのx座標になります。
@@ -81,7 +81,7 @@ Google Chrome, Microsoft Edge, Mozilla Firefoxで動作することを確認し�
 - `yScale`...squashRadによって回転された縦軸方向の画像の拡大率です。1.0で等倍です。
 - `opacity`...不透明度。0.0で完全に透明になり、1.0で完全に不透明になります。
 
-指定した位置に画像を回転、拡大した状態で表示します。
+画像をrotateRadだけ回転し、回転した画像をsquashRadで回転した軸に従って拡大します。結果を指定した位置に表示します。
 
 ### `drawRect(x, y, width, height, r, g, b, opacity)`
 - `x`...表示場所のx座標。四角形の左端がこのx座標になります。
