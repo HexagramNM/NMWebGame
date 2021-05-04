@@ -25,7 +25,7 @@ Google Chrome, Microsoft Edge, Mozilla Firefoxで動作することを確認し�
 - `gameTweet`...ツイートボタンを押されたときにツイートに入れる文字列を決める関数。文字列を返すようにしてください。nullを指定するとツイートボタンが非表示になります。
 
 この関数を`index.html`のbodyタグのonloadで指定します。
- 
+
 
 ## 画像表示
 ### `new ImageManager(source, i_divX, i_divY)`
@@ -70,6 +70,19 @@ Google Chrome, Microsoft Edge, Mozilla Firefoxで動作することを確認し�
 
 指定した位置に画像を回転、拡大した状態で表示します。
 
+### `ImageManager.drawImageWithRotateSquashOpacity(x, y, divXId, divYId, rotateRad, squashRad, xScale, yScale,  opacity)`
+- `x`...表示場所のx座標。画像の中心がこのx座標になります。
+- `y`...表示場所のy座標。画像の中心がこのy座標になります。
+- `divXId`...左から(`divXId` + 1)番目の分割画像を使用します。
+- `divYId`...上から(`divYId` + 1)番目の分割画像を使用します。
+- `rotateRad`...指定した角度だけ、時計回りに画像を回転します。角度の単位はラジアンです。
+- `squashRad`...指定した角度だけ、時計回りに拡大縮小に使用する軸を回転します。角度の単位はラジアンです。
+- `xScale`...squashRadによって回転された横軸方向の画像の拡大率です。1.0で等倍です。
+- `yScale`...squashRadによって回転された縦軸方向の画像の拡大率です。1.0で等倍です。
+- `opacity`...不透明度。0.0で完全に透明になり、1.0で完全に不透明になります。
+
+指定した位置に画像を回転、拡大した状態で表示します。
+
 ### `drawRect(x, y, width, height, r, g, b, opacity)`
 - `x`...表示場所のx座標。四角形の左端がこのx座標になります。
 - `y`...表示場所のy座標。四角形の上端がこのy座標になります。
@@ -102,7 +115,7 @@ Google Chrome, Microsoft Edge, Mozilla Firefoxで動作することを確認し�
 指定した位置にテキストを表示します。
 
 
-## 音声表示
+## 音声再生
 ### `new SoundManager(filePath, localVolume, isLoop, loopStartSec, endTime)`
 - `filePath`...音声のパス
 - `localVolume`...音声の音量の倍率。
@@ -179,5 +192,3 @@ Google Chrome, Microsoft Edge, Mozilla Firefoxで動作することを確認し�
 ### `SaveDataManager.saveData(data)`
 - `data`...保存するデータ
 データを保存します。このデータは基本的に文字列に変換されて保存されます。また、`SaveDataManager`に格納されているデータも`data`に置き換わります。
-
-

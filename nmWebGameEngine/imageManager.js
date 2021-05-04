@@ -260,7 +260,7 @@ ImageManager.prototype.drawImageWithRotateScaleOpacity = function(x, y, divXId, 
         var cosValue = Math.cos(rotateRad);
         var sourceCenterX = this.divWidth / 2;
         var sourceCenterY = this.divHeight / 2;
-        var drawBoxSize = Math.floor(Math.sqrt(this.divWidth * this.divWidth * xScale * xScale + this.divHeight * this.divHeight * yScale * yScale));
+        var drawBoxSize = Math.floor(Math.sqrt(this.divWidth * this.divWidth + this.divHeight * this.divHeight) * (xScale > yScale ? xScale: yScale));
         if (drawBoxSize <= 0) {
             return;
         }
@@ -283,6 +283,92 @@ ImageManager.prototype.drawImageWithRotateScaleOpacity = function(x, y, divXId, 
                     var sourceY = -sinValue * tmpX + cosValue * tmpY;
                     sourceX *= invXScale;
                     sourceY *= invYScale;
+                    sourceX += sourceCenterX;
+                    sourceY += sourceCenterY;
+                    sourceX = Math.floor(sourceX);
+                    sourceY = Math.floor(sourceY);
+
+                    if (sourceX >= 0 && sourceX < this.divWidth && sourceY >= 0 && sourceY < this.divHeight) {
+                        var sourcePixelIndex = (sourceY * this.divWidth + sourceX);
+                        var sourceColor = sourceImageData[sourcePixelIndex];
+                        var sourceOpacity = ((sourceColor >> 24) & 0xff) / 255 * opacity;
+                        if (sourceOpacity > 0) {
+                            var sourceR = (sourceColor & 0xff);
+                            var sourceG = ((sourceColor >> 8) & 0xff);
+                            var sourceB = ((sourceColor >> 16) & 0xff);
+                            var targetColor = backScreenData[currentPixelIndex];
+                            var targetR = (targetColor & 0xff);
+                            var targetG = ((targetColor >> 8) & 0xff);
+                            var targetB = ((targetColor >> 16) & 0xff);
+
+                            targetR = (1.0 - sourceOpacity) * targetR;
+                            targetR += sourceOpacity * sourceR;
+                            targetG = (1.0 - sourceOpacity) * targetG;
+                            targetG += sourceOpacity * sourceG;
+                            targetB = (1.0 - sourceOpacity) * targetB;
+                            targetB += sourceOpacity * sourceB;
+                            targetColor = (targetR | (targetG << 8) | (targetB << 16) | (255 << 24));
+                            backScreenData[currentPixelIndex] = targetColor;
+                        }
+                    }
+                }
+                currentPixelIndex++;
+            }
+        }
+    }
+}
+
+ImageManager.prototype.drawImageWithRotateSquashOpacity = function(x, y, divXId, divYId, rotateRad, squashRad, xScale, yScale, opacity) {
+    if (!valid) {
+        return;
+    }
+    if (divXId < 0 || divXId >= this.divX) {
+        return;
+    }
+    if (divYId < 0 || divYId >= this.divY) {
+        return;
+    }
+    if (this.loadComplete) {
+        var diffSquashRotateRad = squashRad - rotateRad;
+        var sinSquashValue = Math.sin(diffSquashRotateRad);
+        var cosSquashValue = Math.cos(diffSquashRotateRad);
+        var sinRotateValue = Math.sin(rotateRad);
+        var cosRotateValue = Math.cos(rotateRad);
+        var sourceCenterX = this.divWidth / 2;
+        var sourceCenterY = this.divHeight / 2;
+        var drawBoxSize = Math.floor(Math.sqrt(this.divWidth * this.divWidth + this.divHeight * this.divHeight) * (xScale > yScale ? xScale: yScale));
+        if (drawBoxSize <= 0) {
+            return;
+        }
+        var drawBoxCenter = drawBoxSize / 2;
+        var startX = Math.floor(x - drawBoxCenter);
+        var startY = Math.floor(y - drawBoxCenter);
+
+        var invXScale = 1.0 / xScale;
+        var invYScale = 1.0 / yScale;
+        var sourceImageData = this.imageDivData[divXId][divYId];
+        var tmpPosX = 0.0;
+        var tmpPosY = 0.0;
+
+        for (var py = 0; py < drawBoxSize; py = (py + 1) | 0) {
+            var pyFromCenter = py - drawBoxCenter;
+            var currentPixelIndex = (startY + py) * canvasWidth + (startX);
+            for (var px = 0; px < drawBoxSize; px = (px + 1) | 0) {
+                var pxFromCenter = px - drawBoxCenter;
+
+                if (startX + px >= 0 && startX + px < canvasWidth && startY + py >= 0 && startY + py < canvasHeight) {
+                    var sourceX = cosRotateValue * pxFromCenter + sinRotateValue * pyFromCenter;
+                    var sourceY = -sinRotateValue * pxFromCenter + cosRotateValue * pyFromCenter;
+                    tmpPosX = sourceX;
+                    tmpPosY = sourceY;
+                    sourceX = cosSquashValue * tmpPosX + sinSquashValue * tmpPosY;
+                    sourceY = -sinSquashValue * tmpPosX + cosSquashValue * tmpPosY;
+                    sourceX *= invXScale;
+                    sourceY *= invYScale;
+                    tmpPosX = sourceX;
+                    tmpPosY = sourceY;
+                    sourceX = cosSquashValue * tmpPosX - sinSquashValue * tmpPosY;
+                    sourceY = sinSquashValue * tmpPosX + cosSquashValue * tmpPosY;
                     sourceX += sourceCenterX;
                     sourceY += sourceCenterY;
                     sourceX = Math.floor(sourceX);
@@ -349,6 +435,8 @@ function drawRect(x, y, width, height, r, g, b, opacity) {
         }
     }
 }
+
+
 
 function fillCanvas(r, g, b, opacity) {
     var canvasSize = canvasWidth * canvasHeight;

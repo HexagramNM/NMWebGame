@@ -17,7 +17,7 @@ function gameLoading() {
 }
 
 function gameMain() {
-    titleRogoImage.drawImageWithRotateScaleOpacity(control.mouseX, control.mouseY, 0, 0, count * Math.PI / 180.0, 1, 1, 1);
+    titleRogoImage.drawImageWithRotateSquashOpacity(control.mouseX, control.mouseY, 0, 0, 0.0, count * Math.PI / 180.0, 0.8, 1.2, 1);
     var mouseLeftDown = control.isMouseDown(0);
     if (mouseLeftDown < 0) {
         count++;
