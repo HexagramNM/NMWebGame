@@ -14,7 +14,7 @@ function nmGameInit(myInit, myLoading, myMain, myTweet) {
         document.getElementById("tweetShare").addEventListener("mousedown", function(e) {
             tweetText=myTweet();
             document.getElementById("tweetShare").href='https://twitter.com/share?ref_src=twsrc%5Etfw&text='
-                + tweetText + "&url=" + location.href;
+                + encodeURIComponent(tweetText) + "&url=" + encodeURIComponent(location.href);
         });
     }
     control = new ControlManager();
