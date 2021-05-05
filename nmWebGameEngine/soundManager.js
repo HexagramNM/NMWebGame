@@ -36,6 +36,7 @@ class SoundManager {
         this.localVolume = localVolume;
         this.audioLoopStartSec = loopStartSec;
         this.audioEndTime = endTime;
+        this.promise = null;
 
         //範囲再生やループへの対応
         if (isLoop) {
@@ -43,14 +44,14 @@ class SoundManager {
                 this.audio.addEventListener("timeupdate", e=>{
                     if (this.audio.currentTime >= this.audioEndTime) {
                         this.audio.currentTime = this.audioLoopStartSec;
-                        this.audio.play();
+                        this.promise = this.promise.then(_ => {return this.audio.play();}).catch(error => {});
                     }
                 }, false);
             }
             else {
                 this.audio.addEventListener("ended", e=>{
                     this.audio.currentTime = this.audioLoopStartSec;
-                    this.audio.play();
+                    this.promise = this.promise.then(_ => {return this.audio.play();}).catch(error => {});
                 }, false);
             }
         }
@@ -58,8 +59,13 @@ class SoundManager {
             if (endTime != null) {
                 this.audio.addEventListener("timeupdate", e=>{
                     if (this.audio.currentTime >= this.audioEndTime) {
-                        this.audio.pause();
-                        this.audio.currentTime = 0;
+                        if (this.promise) {
+                            this.promise.then(_ => {this.audio.pause(); this.audio.currentTime = 0;}).catch(error => {});
+                        }
+                        else {
+                            this.audio.pause();
+                            this.audio.currentTime = 0;
+                        }
                     }
                 }, false);
             }
@@ -73,12 +79,19 @@ class SoundManager {
 }
 
 SoundManager.prototype.play = function(isFromStart) {
-    this.audio.pause();
+    if (this.promise) {
+        this.promise.then(_ => {this.audio.pause();}).catch(error => {});
+    }
     this.audio.volume = soundVolume * this.localVolume;
     if (isFromStart) {
         this.audio.currentTime = 0;
     }
-    this.audio.play();
+    if (this.promise) {
+        this.promise = this.promise.then(_ => {return this.audio.play();}).catch(error => {});
+    }
+    else {
+        this.promise = this.audio.play();
+    }
 }
 
 SoundManager.prototype.playRate = function(rate) {
@@ -86,5 +99,10 @@ SoundManager.prototype.playRate = function(rate) {
 }
 
 SoundManager.prototype.pause = function() {
-    this.audio.pause();
+    if (this.promise) {
+        this.promise.then(_ => {this.audio.pause();}).catch(error => {});
+    }
+    else {
+        this.audio.pause();
+    }
 }
