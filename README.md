@@ -1,6 +1,8 @@
 # NMWebGame
-画像表示や音声再生、キーボード入力などをサポートしたブラウザゲーム用のエンジンです。
-[落ちものパズルゲーム「長屋合宿を取り戻せ！」](http://nmsgameproject.web.fc2.com/nagayaGassyukuPuzzle/nagayaGassyukuPuzzle.html)で使用しております。
+画像表示や音声再生、キーボード入力などをサポートしたブラウザゲーム用のエンジンです。以下のゲーム制作に使用しております。
+- [落ちものパズルゲーム「長屋合宿を取り戻せ！」](http://nmsgameproject.web.fc2.com/nagayaGassyukuPuzzle/nagayaGassyukuPuzzle.html)
+- [ピンボールゲーム「ぽわぽわピンボール」](http://nmsgameproject.web.fc2.com/powapowaPinball/powapowaPinball.html)
+
 Google Chrome, Microsoft Edge, Mozilla Firefoxで動作することを確認しております。
 
 ゲームのテンプレートは`gameTemplate`に入っており、再生すると[こんな感じ](https://hexagramnm.github.io/NMWebGame/gameTemplate/index.html)になります。
