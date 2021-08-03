@@ -154,32 +154,20 @@ ImageManager.prototype.drawImage = function(x, y, divXId, divYId) {
         var sourceImageData = this.imageDivData[divXId][divYId];
         var currentSourcePixelIndex = 0;
         for (var yIdx = startY; yIdx < endY; yIdx = (yIdx + 1) | 0) {
-            var currentTargetPixelIndex = (yIdx) * canvasWidth + startX;
+            var currentPixelIndex = (yIdx) * canvasWidth + startX;
             for (var xIdx = startX; xIdx < endX; xIdx = (xIdx + 1) | 0) {
                 if (xIdx >= 0 && xIdx < canvasWidth && yIdx >= 0 && yIdx < canvasHeight) {
                     var sourceColor = sourceImageData[currentSourcePixelIndex];
                     var sourceOpacity =  ((sourceColor >> 24) & 0xff) / 255;
                     if (sourceOpacity > 0.0) {
-                        var targetColor = backScreenData[currentTargetPixelIndex];
                         var sourceR = (sourceColor & 0xff);
                         var sourceG = ((sourceColor >> 8) & 0xff);
                         var sourceB = ((sourceColor >> 16) & 0xff);
-                        var targetR = (targetColor & 0xff);
-                        var targetG = ((targetColor >> 8) & 0xff);
-                        var targetB = ((targetColor >> 16) & 0xff);
-
-                        targetR = targetR * (1.0 - sourceOpacity);
-                        targetR += sourceR * sourceOpacity;
-                        targetG = targetG * (1.0 - sourceOpacity);
-                        targetG += sourceG * sourceOpacity;
-                        targetB = targetB * (1.0 - sourceOpacity);
-                        targetB += sourceB * sourceOpacity;
-                        targetColor = (targetR | (targetG << 8) | (targetB << 16) | (255 << 24));
-                        backScreenData[currentTargetPixelIndex] = targetColor;
+                        drawPixel(currentPixelIndex, sourceR, sourceG, sourceB, sourceOpacity);
                     }
                 }
                 currentSourcePixelIndex = currentSourcePixelIndex + 1;
-                currentTargetPixelIndex = currentTargetPixelIndex + 1;
+                currentPixelIndex = currentPixelIndex + 1;
             }
         }
     }
@@ -221,22 +209,10 @@ ImageManager.prototype.drawImageWithScaleTrimOpacity = function(x, y, divXId, di
                     var sourceColor = sourceImageData[sourcePixelIndex];
                     var sourceOpacity =  ((sourceColor >> 24) & 0xff) / 255 * opacity;
                     if (sourceOpacity > 0) {
-                        var targetColor = backScreenData[currentPixelIndex];
                         var sourceR = (sourceColor & 0xff);
                         var sourceG = ((sourceColor >> 8) & 0xff);
                         var sourceB = ((sourceColor >> 16) & 0xff);
-                        var targetR = (targetColor & 0xff);
-                        var targetG = ((targetColor >> 8) & 0xff);
-                        var targetB = ((targetColor >> 16) & 0xff);
-
-                        targetR = (1.0 - sourceOpacity) * targetR;
-                        targetR += sourceOpacity * sourceR;
-                        targetG = (1.0 - sourceOpacity) * targetG;
-                        targetG += sourceOpacity * sourceG;
-                        targetB = (1.0 - sourceOpacity) * targetB;
-                        targetB += sourceOpacity * sourceB;
-                        targetColor = (targetR | (targetG << 8) | (targetB << 16) | (255 << 24));
-                        backScreenData[currentPixelIndex] = targetColor;
+                        drawPixel(currentPixelIndex, sourceR, sourceG, sourceB, sourceOpacity);
                     }
                 }
                 currentPixelIndex++;
@@ -296,19 +272,7 @@ ImageManager.prototype.drawImageWithRotateScaleOpacity = function(x, y, divXId, 
                             var sourceR = (sourceColor & 0xff);
                             var sourceG = ((sourceColor >> 8) & 0xff);
                             var sourceB = ((sourceColor >> 16) & 0xff);
-                            var targetColor = backScreenData[currentPixelIndex];
-                            var targetR = (targetColor & 0xff);
-                            var targetG = ((targetColor >> 8) & 0xff);
-                            var targetB = ((targetColor >> 16) & 0xff);
-
-                            targetR = (1.0 - sourceOpacity) * targetR;
-                            targetR += sourceOpacity * sourceR;
-                            targetG = (1.0 - sourceOpacity) * targetG;
-                            targetG += sourceOpacity * sourceG;
-                            targetB = (1.0 - sourceOpacity) * targetB;
-                            targetB += sourceOpacity * sourceB;
-                            targetColor = (targetR | (targetG << 8) | (targetB << 16) | (255 << 24));
-                            backScreenData[currentPixelIndex] = targetColor;
+                            drawPixel(currentPixelIndex, sourceR, sourceG, sourceB, sourceOpacity);
                         }
                     }
                 }
@@ -382,19 +346,7 @@ ImageManager.prototype.drawImageWithRotateSquashOpacity = function(x, y, divXId,
                             var sourceR = (sourceColor & 0xff);
                             var sourceG = ((sourceColor >> 8) & 0xff);
                             var sourceB = ((sourceColor >> 16) & 0xff);
-                            var targetColor = backScreenData[currentPixelIndex];
-                            var targetR = (targetColor & 0xff);
-                            var targetG = ((targetColor >> 8) & 0xff);
-                            var targetB = ((targetColor >> 16) & 0xff);
-
-                            targetR = (1.0 - sourceOpacity) * targetR;
-                            targetR += sourceOpacity * sourceR;
-                            targetG = (1.0 - sourceOpacity) * targetG;
-                            targetG += sourceOpacity * sourceG;
-                            targetB = (1.0 - sourceOpacity) * targetB;
-                            targetB += sourceOpacity * sourceB;
-                            targetColor = (targetR | (targetG << 8) | (targetB << 16) | (255 << 24));
-                            backScreenData[currentPixelIndex] = targetColor;
+                            drawPixel(currentPixelIndex, sourceR, sourceG, sourceB, sourceOpacity);
                         }
                     }
                 }
@@ -404,38 +356,135 @@ ImageManager.prototype.drawImageWithRotateSquashOpacity = function(x, y, divXId,
     }
 }
 
+function drawPixel(pixelIndex, r, g, b, opacity) {
+    var targetColor = backScreenData[pixelIndex];
+    var targetR = (targetColor & 0xff);
+    var targetG = ((targetColor >> 8) & 0xff);
+    var targetB = ((targetColor >> 16) & 0xff);
+
+    targetR = (1.0 - opacity) * targetR;
+    targetR += opacity * r;
+    targetG = (1.0 - opacity) * targetG;
+    targetG += opacity * g;
+    targetB = (1.0 - opacity) * targetB;
+    targetB += opacity * b;
+    targetColor = (targetR | (targetG << 8) | (targetB << 16) | (255 << 24));
+    backScreenData[pixelIndex] = targetColor;
+}
+
 function drawRect(x, y, width, height, r, g, b, opacity) {
     var startX = Math.floor(x);
     var startY = Math.floor(y);
     var endX = startX + Math.floor(width);
     var endY = startY + Math.floor(height);
-    var tmpR = r * opacity;
-    var tmpG = g * opacity;
-    var tmpB = b * opacity;
-    var currentSourcePixelIndex = 0;
     for (var yIdx = startY; yIdx < endY; yIdx = (yIdx + 1) | 0) {
-        var currentTargetPixelIndex = (yIdx) * canvasWidth + startX;
+        var currentPixelIndex = (yIdx) * canvasWidth + startX;
         for (var xIdx = startX; xIdx < endX; xIdx = (xIdx + 1) | 0) {
             if (xIdx >= 0 && xIdx < canvasWidth && yIdx >= 0 && yIdx < canvasHeight) {
                 if (opacity > 0.0) {
-                    var targetColor = backScreenData[currentTargetPixelIndex];
-                    var targetR = (targetColor & 0xff);
-                    var targetG = ((targetColor >> 8) & 0xff);
-                    var targetB = ((targetColor >> 16) & 0xff);
-
-                    targetR = targetR * (1.0 - opacity) + tmpR;
-                    targetG = targetG * (1.0 - opacity) + tmpG;
-                    targetB = targetB * (1.0 - opacity) + tmpB;
-                    targetColor = (targetR | (targetG << 8) | (targetB << 16) | (255 << 24));
-                    backScreenData[currentTargetPixelIndex] = targetColor;
+                    drawPixel(currentPixelIndex, r, g, b, opacity);
                 }
             }
-            currentSourcePixelIndex = currentSourcePixelIndex + 1;
-            currentTargetPixelIndex = currentTargetPixelIndex + 1;
+            currentPixelIndex++;
         }
     }
 }
 
+function drawLine(x1, y1, x2, y2, width, r, g, b, opacity) {
+    if (x1 == x2) {
+        var startY = (y1 < y2 ? y1 : y2);
+        var length = (y1 < y2 ? y2 - y1 : y1 - y2);
+        drawRect(x1 - 0.5 * width, startY, width, height, r, g, b, opacity);
+        return;
+    }
+    else if (y1 == y2) {
+        var startX = (x1 < x2 ? x1 : x2);
+        var length = (x1 < x2 ? x2 - x1 : x1 - x2);
+        drawRect(startX, y1 - 0.5 * width, length, width, r, g, b, opacity);
+        return;
+    }
+
+    //角となる点の計算
+    var verticalTangent = -(x2 - x1) / (y2 - y1);
+    var tmpValue = Math.sqrt(1.0 + verticalTangent * verticalTangent);
+    var verticalUnitVector = [1.0 / tmpValue, verticalTangent / tmpValue];
+    var cornerPoint = new Array(4);
+    cornerPoint[0] = [x1 + 0.5 * width * verticalUnitVector[0], y1 + 0.5 * width * verticalUnitVector[1]];
+    cornerPoint[1] = [x1 - 0.5 * width * verticalUnitVector[0], y1 - 0.5 * width * verticalUnitVector[1]];
+    cornerPoint[2] = [x2 + 0.5 * width * verticalUnitVector[0], y2 + 0.5 * width * verticalUnitVector[1]];
+    cornerPoint[3] = [x2 - 0.5 * width * verticalUnitVector[0], y2 - 0.5 * width * verticalUnitVector[1]];
+
+    //どの点が上下左右どこに当たるかを計算
+    var upIdx = 0;
+    var downIdx = 0;
+    var leftIdx = 0;
+    var rightIdx = 0;
+    var minX = cornerPoint[0][0];
+    var maxX = cornerPoint[0][0];
+    var minY = cornerPoint[0][1];
+    var maxY = cornerPoint[0][1];
+    for (var idx = 0; idx < 4; idx++) {
+        if (cornerPoint[idx][0] < minX) {
+            minX = cornerPoint[idx][0];
+            leftIdx = idx;
+        }
+        if (cornerPoint[idx][0] > maxX) {
+            maxX = cornerPoint[idx][0];
+            rightIdx = idx;
+        }
+        if (cornerPoint[idx][1] < minY) {
+            minY = cornerPoint[idx][1];
+            upIdx = idx;
+        }
+        if (cornerPoint[idx][1] > maxY) {
+            maxY = cornerPoint[idx][1];
+            downIdx = idx;
+        }
+    }
+
+    //計算された角をもとに描画
+    var startX = 0;
+    var endX = 0;
+    var startY = Math.floor(cornerPoint[upIdx][1]);
+    if (startY < 0) {
+        startY = 0;
+    }
+    var endY = Math.floor(cornerPoint[downIdx][1]);
+    if (endY >= canvasHeight) {
+        endY = canvasHeight - 1;
+    }
+    var invTangentToLeftDown = (cornerPoint[leftIdx][0] - cornerPoint[upIdx][0]) / (cornerPoint[leftIdx][1] - cornerPoint[upIdx][1]);
+    var invTangentToRightDown = (cornerPoint[rightIdx][0] - cornerPoint[upIdx][0]) / (cornerPoint[rightIdx][1] - cornerPoint[upIdx][1]);
+    for (var yIdx = startY; yIdx <= endY; yIdx++) {
+        //startXの計算
+        if (yIdx < cornerPoint[leftIdx][1]) {
+            startX = Math.floor(invTangentToLeftDown * (yIdx - cornerPoint[upIdx][1]) + cornerPoint[upIdx][0]);
+        }
+        else {
+            startX = Math.floor(invTangentToRightDown * (yIdx - cornerPoint[leftIdx][1]) + cornerPoint[leftIdx][0]);
+        }
+        if (startX < 0) {
+            startX = 0;
+        }
+        //endXの計算
+        if (yIdx < cornerPoint[rightIdx][1]) {
+            endX = Math.floor(invTangentToRightDown * (yIdx - cornerPoint[upIdx][1]) + cornerPoint[upIdx][0]);
+        }
+        else {
+            endX = Math.floor(invTangentToLeftDown * (yIdx - cornerPoint[rightIdx][1]) + cornerPoint[rightIdx][0]);
+        }
+        if (endX >= canvasWidth) {
+            endX = canvasWidth - 1;
+        }
+        var currentPixelIndex = yIdx * canvasWidth + startX;
+        for (var xIdx = startX; xIdx <= endX; xIdx++) {
+            if (opacity > 0.0) {
+                drawPixel(currentPixelIndex, r, g, b, opacity);
+            }
+            currentPixelIndex++;
+        }
+    }
+}
 
 
 function fillCanvas(r, g, b, opacity) {
@@ -495,7 +544,7 @@ function drawText(x, y, text, size, color, align, font) {
 
     var currentSourcePixelIndex = 0;
     for (var yIdx = 0; yIdx < textHeight; yIdx = (yIdx + 1) | 0) {
-        var currentTargetPixelIndex = (startY + yIdx) * canvasWidth + startX;
+        var currentPixelIndex = (startY + yIdx) * canvasWidth + startX;
         for (var xIdx = 0; xIdx < textWidth; xIdx = (xIdx + 1) | 0) {
             if (xIdx + startX >= 0 && xIdx + startX < canvasWidth && yIdx + startY >= 0 && yIdx + startY < canvasHeight) {
                 var sourceColor = textImageData[currentSourcePixelIndex];
@@ -504,22 +553,11 @@ function drawText(x, y, text, size, color, align, font) {
                     var sourceR = (sourceColor & 0xff);
                     var sourceG = ((sourceColor >> 8) & 0xff);
                     var sourceB = ((sourceColor >> 16) & 0xff);
-                    var targetColor = backScreenData[currentTargetPixelIndex];
-                    var targetR = (targetColor & 0xff);
-                    var targetG = ((targetColor >> 8) & 0xff);
-                    var targetB = ((targetColor >> 16) & 0xff);
-                    targetR = targetR * (1.0 - opacity);
-                    targetR += sourceR * opacity;
-                    targetG = targetG * (1.0 - opacity);
-                    targetG += sourceG * opacity;
-                    targetB = targetB * (1.0 - opacity);
-                    targetB += sourceB * opacity;
-                    targetColor = (targetR | (targetG << 8) | (targetB << 16) | (255 << 24));
-                    backScreenData[currentTargetPixelIndex] = targetColor;
+                    drawPixel(currentPixelIndex, sourceR, sourceG, sourceB, opacity);
                 }
             }
-            currentSourcePixelIndex = currentSourcePixelIndex + 1;
-            currentTargetPixelIndex = currentTargetPixelIndex + 1;
+            currentSourcePixelIndex++;
+            currentPixelIndex++;
         }
     }
 }
